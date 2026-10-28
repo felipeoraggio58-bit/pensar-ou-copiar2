@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pensar ou Copiar? | Autonomia Cognitiva & IA</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#030712',
+                        cardBg: '#0b1120',
+                        neonCyan: '#00f0ff',
+                        neonBlue: '#3b82f6',
+                        neonPurple: '#a855f7',
+                    },
+                    boxShadow: {
+                        'cyan-glow': '0 0 25px rgba(0, 240, 255, 0.35)',
+                        'blue-glow': '0 0 25px rgba(59, 130, 246, 0.35)',
+                        'purple-glow': '0 0 25px rgba(168, 85, 247, 0.35)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030712;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        .bg-grid-pattern {
+            background-image: radial-gradient(rgba(0, 240, 255, 0.12) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .neon-border-cyan {
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+        }
+
+        .neon-border-cyan:hover {
+            border-color: rgba(0, 240, 255, 0.8);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+        }
+
+        button:focus-visible { outline: 2px solid #00f0ff; outline-offset: 2px; }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #030712;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f0ff;
+        }
+    </style>
+</head>
+<body class="bg-darkBg bg-grid-pattern min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
+
+    <!-- Global Alert/Info Modal -->
+    <div id="info-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md hidden transition-all duration-300">
+        <div class="bg-gray-900 border border-cyan-500/50 rounded-2xl p-6 sm:p-8 max-w-lg w-full mx-4 shadow-cyan-glow relative text-center">
+            <div id="modal-icon-container" class="w-14 h-14 rounded-2xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center mx-auto mb-4 border border-cyan-500/30 text-2xl">
+                <i id="modal-icon" class="fa-solid fa-circle-info"></i>
+            </div>
+            <h3 id="modal-title" class="text-2xl font-bold text-white mb-3">Título</h3>
+            <p id="modal-body" class="text-gray-300 text-sm sm:text-base leading-relaxed mb-6">Conteúdo do modal...</p>
+            <button onclick="closeInfoModal()" class="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-extrabold rounded-xl transition-all shadow-cyan-glow">
+                Fechar
+            </button>
+        </div>
+    </div>
+
+<!-- Página Inicial: identificação do visitante -->
+    <div id="landing" class="fixed inset-0 z-[60] overflow-y-auto bg-darkBg bg-grid-pattern">
+        <div class="relative min-h-full flex items-center justify-center px-4 py-12">
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div class="w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px]"></div>
+                <div class="w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-[100px] -translate-x-32"></div>
+            </div>
+            <div class="relative max-w-4xl w-full text-center">
+                <div class="flex items-center justify-center space-x-3 mb-8">
+                    <div class="w-11 h-11 shrink-0 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-cyan-glow">
+                        <i class="fa-solid fa-brain text-black text-xl animate-pulse"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-gray-400 tracking-wider leading-tight">FEIRA DE CIÊNCIAS COLÉGIO PENTÁGONO 2026</span>
+                </div>
+                <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-white mb-4 leading-tight">
+                    Pensar ou <span class="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">Copiar?</span>
+                </h1>
+                <p class="text-lg sm:text-xl font-semibold text-cyan-200/90 max-w-2xl mx-auto mb-3">O Limite entre o Uso Consciente da IA e a Atrofia Intelectual</p>
+                <p class="text-gray-400 mb-6">Digite o seu nome para ser exibido no placar</p>
+                <div class="max-w-md mx-auto mb-8 text-left">
+                    <label for="nome" class="block text-sm font-bold text-white mb-2">Seu nome</label>
+                    <input id="nome" type="text" maxlength="30" autocomplete="off" oninput="$('nome-erro').classList.add('hidden')" class="w-full bg-gray-950 border border-gray-700 focus:border-cyan-400 rounded-xl p-4 text-white text-sm outline-none transition-colors">
+                    <p id="nome-erro" class="hidden text-yellow-400 text-xs font-semibold mt-2">Digite seu nome para continuar.</p>
+                </div>
+                <p class="text-sm font-semibold text-gray-300 mb-4">Agora escolha seu perfil:</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <button onclick="enter('estudante')" class="group text-left bg-gray-900/90 neon-border-cyan rounded-2xl p-6 transition-all hover:-translate-y-1">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center mb-4 text-xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-user-graduate"></i></div>
+                        <h3 class="text-xl font-extrabold text-white mb-1">Estudante</h3>
+                        <p class="text-sm text-gray-400">Estudo na escola ou na faculdade.</p>
+                    </button>
+                    <button onclick="enter('professor')" class="group text-left bg-gray-900/90 border border-blue-500/30 hover:border-blue-400 hover:shadow-blue-glow rounded-2xl p-6 transition-all hover:-translate-y-1">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center mb-4 text-xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-chalkboard-user"></i></div>
+                        <h3 class="text-xl font-extrabold text-white mb-1">Professor(a)</h3>
+                        <p class="text-sm text-gray-400">Ensino e quero ver isso de perto.</p>
+                    </button>
+                    <button onclick="enter('visitante')" class="group text-left bg-gray-900/90 border border-purple-500/30 hover:border-purple-400 hover:shadow-purple-glow rounded-2xl p-6 transition-all hover:-translate-y-1">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center mb-4 text-xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-user-group"></i></div>
+                        <h3 class="text-xl font-extrabold text-white mb-1">Visitante</h3>
+                        <p class="text-sm text-gray-400">Estou só conhecendo o projeto.</p>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-40 backdrop-blur-xl bg-darkBg/80 border-b border-gray-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[5rem] py-2 gap-3 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-11 h-11 shrink-0 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center shadow-cyan-glow">
+                    <i class="fa-solid fa-brain text-black text-xl animate-pulse"></i>
+                </div>
+                <div class="min-w-0">
+                    <span class="text-xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">Pensar ou Copiar?</span>
+                    <span class="block text-xs font-semibold text-gray-400 tracking-wider leading-tight">FEIRA DE CIÊNCIAS COLÉGIO PENTÁGONO 2026</span>
+                </div>
+            </div>
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-semibold text-gray-300">
+                <a href="#hero" class="hover:text-cyan-400 transition-colors">Início</a>
+                <a href="#experiment" class="hover:text-cyan-400 transition-colors">O Desafio</a>
+                <a href="#science" class="hover:text-cyan-400 transition-colors">Painel Científico</a>
+                <a href="#practices" class="hover:text-cyan-400 transition-colors">Boas Práticas</a>
+                <a href="#checklist" class="hover:text-cyan-400 transition-colors">Checklist</a>
+            </nav>
+            <a href="#experiment" class="shrink-0 px-5 py-2.5 bg-cyan-500/10 border border-cyan-400/40 text-cyan-300 hover:bg-cyan-500 hover:text-black font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-cyan-glow flex items-center gap-2">
+                <i class="fa-solid fa-flask"></i> Jogar Agora
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+
+        <!-- 1. HERO SECTION -->
+        <section id="hero" class="relative py-20 lg:py-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
+            <div class="absolute inset-0 -z-10 flex items-center justify-center">
+                <div class="w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[120px]"></div>
+                <div class="w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-[100px] -translate-x-32"></div>
+            </div>
+
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-400 text-xs sm:text-sm font-semibold mb-8 shadow-cyan-glow">
+                <i class="fa-solid fa-microscope"></i> Projeto de Pesquisa em Autonomia Cognitiva
+            </div>
+
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white mb-6 leading-tight">
+                Pensar ou <span class="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">Copiar?</span>
+            </h1>
+
+            <p class="text-lg sm:text-2xl font-semibold text-cyan-200/90 max-w-3xl mx-auto mb-6">
+                O Limite entre o Uso Consciente da IA e a Atrofia Intelectual
+            </p>
+
+            <p class="text-base sm:text-lg text-gray-400 max-w-3xl mx-auto mb-10 leading-relaxed">
+                A inteligência artificial generativa resolve tarefas complexas em segundos. Mas o que acontece com as nossas sinapses e com a retenção de longo prazo quando terceirizamos o pensamento lógico? Participe do nosso desafio ao vivo para descobrir.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <a href="#experiment" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-cyan-400 to-blue-600 hover:from-cyan-300 hover:to-blue-500 text-black font-extrabold text-base rounded-2xl shadow-cyan-glow transition-all transform hover:-translate-y-1 flex items-center justify-center gap-3">
+                    <span>Jogar o Desafio Agora</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- 2. DESAFIO AO VIVO -->
+        <section id="experiment" class="py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
+            <div class="bg-cardBg border border-gray-800 rounded-3xl p-6 sm:p-10 shadow-2xl space-y-10">
+                <div class="text-center">
+                    <span class="text-cyan-400 font-bold text-xs uppercase tracking-widest bg-cyan-500/10 px-3.5 py-1.5 rounded-full border border-cyan-500/30">
+                        <i class="fa-solid fa-vial mr-1"></i> Desafio ao vivo
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-black text-white mt-4">Pensar ou copiar: quem aprende mais?</h2>
+                    <p class="text-gray-400 text-sm sm:text-base mt-2 max-w-2xl mx-auto">
+                        São dois problemas sorteados. No primeiro você escolhe: pensar sozinho ou copiar a resposta da IA. No segundo, você responde sem ajuda e vemos se a escolha fez diferença. Seu resultado entra no placar da feira.
+                    </p>
+                    <span id="who" class="inline-block mt-4 text-xs font-semibold text-gray-300 bg-gray-900 border border-gray-700 px-3 py-1 rounded-full empty:hidden"></span>
+                </div>
+
+                <div id="stage" aria-live="polite"></div>
+                <div id="board" class="bg-gray-950 border border-gray-800 rounded-2xl p-6 space-y-5"></div>
+            </div>
+        </section>
+
+        <!-- 3. PAINEL DE DADOS E CIÊNCIA (INFOGRÁFICO EDUCATIVO) -->
+        <section id="science" class="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-cyan-400 font-bold text-xs uppercase tracking-widest bg-cyan-500/10 px-3.5 py-1.5 rounded-full border border-cyan-500/30">
+                    Evidências Neurocientíficas
+                </span>
+                <h2 class="text-3xl sm:text-5xl font-black text-white mt-4">Painel de Dados & Autonomia</h2>
+                <p class="text-gray-400 mt-4 text-base sm:text-lg">
+                    Clique nos cartões para explorar os pilares neurobiológicos por trás do aprendizado ativo e da atrofia cognitiva.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Card 1: Neuroplasticidade -->
+                <div onclick="openTopicModal('neuroplasticity')" class="cursor-pointer bg-cardBg border border-gray-800 hover:border-cyan-400 rounded-3xl p-8 transition-all hover:-translate-y-2 hover:shadow-cyan-glow group flex flex-col justify-between">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center mb-6 text-2xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">Neuroplasticidade & Frustração Saudável</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                            O cérebro altera sua estrutura física quando enfrenta dificuldades lógicas. Entenda como o esforço mental estimula a bainha de mielina e consolida conexões duradouras.
+                        </p>
+                    </div>
+                    <div class="flex items-center text-cyan-400 font-bold text-xs uppercase tracking-wider gap-2">
+                        <span>Explorar Conceito</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Card 2: Amnésia Digital -->
+                <div onclick="openTopicModal('amnesia')" class="cursor-pointer bg-cardBg border border-gray-800 hover:border-blue-400 rounded-3xl p-8 transition-all hover:-translate-y-2 hover:shadow-blue-glow group flex flex-col justify-between">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/30 text-blue-400 flex items-center justify-center mb-6 text-2xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-hard-drive"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4">Amnésia Digital & Efeito Google</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                            Quando o cérebro sabe que a informação está armazenada externamente em um modelo de IA, ele descarta a necessidade de retê-la no hipocampo.
+                        </p>
+                    </div>
+                    <div class="flex items-center text-blue-400 font-bold text-xs uppercase tracking-wider gap-2">
+                        <span>Explorar Conceito</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Card 3: Uso Passivo vs Ativo -->
+                <div onclick="openTopicModal('active_vs_passive')" class="cursor-pointer bg-cardBg border border-gray-800 hover:border-purple-400 rounded-3xl p-8 transition-all hover:-translate-y-2 hover:shadow-purple-glow group flex flex-col justify-between">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/30 text-purple-400 flex items-center justify-center mb-6 text-2xl group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-sliders"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4">Passivo vs. Ativo: O Papel da IA</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                            A diferença fundamental entre usar a inteligência artificial como uma muleta cognitiva substitutiva ou como um tutor socrático de aprendizado.
+                        </p>
+                    </div>
+                    <div class="flex items-center text-purple-400 font-bold text-xs uppercase tracking-wider gap-2">
+                        <span>Explorar Conceito</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 4. GUIA DE BOAS PRÁTICAS -->
+        <section id="practices" class="py-16 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+            <div class="bg-gradient-to-br from-cardBg to-gray-950 border border-cyan-500/30 rounded-3xl p-8 sm:p-12 shadow-2xl">
+                <div class="max-w-2xl mb-12">
+                    <span class="text-cyan-400 font-bold text-xs uppercase tracking-widest bg-cyan-500/10 px-3.5 py-1.5 rounded-full border border-cyan-500/30">
+                        Protocolo de Preservação Cognitiva
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-black text-white mt-4">Diretrizes de Boas Práticas para Estudantes</h2>
+                    <p class="text-gray-400 mt-2 text-sm sm:text-base">
+                        Como integrar ferramentas de IA no seu dia a dia sem comprometer sua inteligência analítica e memória de longo prazo.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-gray-900/90 border border-gray-800 rounded-2xl p-6">
+                        <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-black mb-4">1</div>
+                        <h4 class="text-white font-bold text-lg mb-2">A Regra dos 15 Minutos</h4>
+                        <p class="text-sm text-gray-400 leading-relaxed">
+                            Force seu cérebro a rascunhar, planejar e tentar resolver um problema sozinho por no mínimo 15 minutos antes de abrir qualquer ferramenta de IA.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-900/90 border border-gray-800 rounded-2xl p-6">
+                        <div class="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-black mb-4">2</div>
+                        <h4 class="text-white font-bold text-lg mb-2">Escrita & Rascunho Manual</h4>
+                        <p class="text-sm text-gray-400 leading-relaxed">
+                            Ao estudar resumos gerados por IA, reescreva os conceitos-chave à mão. A cinestesia do traço no papel ativa vias motoras que reforçam a retenção.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-900/90 border border-gray-800 rounded-2xl p-6">
+                        <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-black mb-4">3</div>
+                        <h4 class="text-white font-bold text-lg mb-2">Auditoria & Checagem Crítica</h4>
+                        <p class="text-sm text-gray-400 leading-relaxed">
+                            Trate as respostas da IA como hipóteses que precisam ser validadas em livros ou fontes oficiais, identificando ativamente possíveis erros.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. CHECKLIST INTERATIVO DE DEPENDÊNCIA -->
+        <section id="checklist" class="py-16 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
+            <div class="bg-cardBg border border-gray-800 rounded-3xl p-6 sm:p-10 shadow-xl">
+                <div class="text-center mb-8">
+                    <span class="text-purple-400 font-bold text-xs uppercase tracking-widest bg-purple-500/10 px-3.5 py-1.5 rounded-full border border-purple-500/30">
+                        Autoavaliação
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-black text-white mt-4">Checklist de Nível de Dependência</h2>
+                    <p class="text-gray-400 text-sm sm:text-base mt-2">
+                        Marque as afirmativas que correspondem aos seus hábitos de estudo atuais:
+                    </p>
+                </div>
+
+                <div class="space-y-4 max-w-2xl mx-auto" id="checklist-items">
+                    <label class="flex items-start gap-4 p-4 bg-gray-900/80 border border-gray-800 rounded-2xl cursor-pointer hover:border-gray-700 transition-all">
+                        <input type="checkbox" onchange="updateChecklistResult()" class="chk-item w-5 h-5 mt-0.5 accent-cyan-400 rounded">
+                        <span class="text-sm text-gray-300">Peço para a IA gerar redações ou códigos antes mesmo de tentar criar um rascunho.</span>
+                    </label>
+                    <label class="flex items-start gap-4 p-4 bg-gray-900/80 border border-gray-800 rounded-2xl cursor-pointer hover:border-gray-700 transition-all">
+                        <input type="checkbox" onchange="updateChecklistResult()" class="chk-item w-5 h-5 mt-0.5 accent-cyan-400 rounded">
+                        <span class="text-sm text-gray-300">Sinto desconforto ou ansiedade ao ter que resolver um cálculo ou síntese de texto sem acesso à internet.</span>
+                    </label>
+                    <label class="flex items-start gap-4 p-4 bg-gray-900/80 border border-gray-800 rounded-2xl cursor-pointer hover:border-gray-700 transition-all">
+                        <input type="checkbox" onchange="updateChecklistResult()" class="chk-item w-5 h-5 mt-0.5 accent-cyan-400 rounded">
+                        <span class="text-sm text-gray-300">Aceito respostas geradas por IA sem verificar a veracidade das fontes e dados fornecidos.</span>
+                    </label>
+                    <label class="flex items-start gap-4 p-4 bg-gray-900/80 border border-gray-800 rounded-2xl cursor-pointer hover:border-gray-700 transition-all">
+                        <input type="checkbox" onchange="updateChecklistResult()" class="chk-item w-5 h-5 mt-0.5 accent-cyan-400 rounded">
+                        <span class="text-sm text-gray-300">Esqueço completamente do conteúdo de trabalhos poucas horas após copiá-los de um modelo de IA.</span>
+                    </label>
+                </div>
+
+                <div id="checklist-diagnosis" class="mt-8 p-6 bg-gray-950 border border-gray-800 rounded-2xl text-center">
+                    <span class="text-xs text-gray-400 font-bold uppercase tracking-wider block mb-1">Resultado da Autoavaliação</span>
+                    <h4 id="chk-score-title" class="text-xl font-extrabold text-cyan-400">Marque os itens acima para calcular seu perfil.</h4>
+                    <p id="chk-score-desc" class="text-xs sm:text-sm text-gray-400 mt-2">Identifique se seus hábitos estão fortalecendo ou enfraquecendo suas conexões neurais.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 bg-darkBg/95 py-8 px-4 text-center text-gray-500 text-sm">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>© 2026 Feira de Ciências Colégio Pentágono 2026 — Pensar ou Copiar?</p>
+            <p class="text-xs text-cyan-400/80">Pesquisa Interativa em Neurociência & Inteligência Artificial</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        /* -------------------------------------------------------------
+           1. MODAL SYSTEM
+        ------------------------------------------------------------- */
+        function openInfoModal(title, text, iconClass = "fa-circle-info", iconColorClass = "text-cyan-400") {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-body').innerText = text;
+            const iconElem = document.getElementById('modal-icon');
+            iconElem.className = `fa-solid ${iconClass} ${iconColorClass}`;
+            document.getElementById('info-modal').classList.remove('hidden');
+        }
+
+        function closeInfoModal() {
+            document.getElementById('info-modal').classList.add('hidden');
+        }
+
+        /* -------------------------------------------------------------
+           2. SCIENTIFIC TOPIC MODALS
+        ------------------------------------------------------------- */
+        const topicData = {
+            neuroplasticity: {
+                title: "Neuroplasticidade & Frustração Saudável",
+                text: "Quando você se depara com um problema difícil e sente uma 'frustração inicial', o cérebro está liberando neuromoduladores como noradrenalina e acetilcolina. Esse estado de alerta sinaliza aos neurônios que aquela informação é vital. A resolução autônoma consolida a bainha de mielina ao redor dos axônios, tornando o raciocínio futuro até 10x mais rápido.",
+                icon: "fa-bolt",
+                color: "text-cyan-400"
+            },
+            amnesia: {
+                title: "Amnésia Digital & O Efeito Google",
+                text: "Estudos de neuroimagem mostram que o cérebro economiza energia metabolicamente quando detecta que a informação está gravada externamente. Ao terceirizar a resolução do enigma para a IA sem reflexão prévia, o hipocampo cancela o processo de consolidação de memória de longo prazo, gerando um apagão cognitivo imediato.",
+                icon: "fa-hard-drive",
+                color: "text-blue-400"
+            },
+            active_vs_passive: {
+                title: "Uso Passivo vs. Uso Ativo da IA",
+                text: "Uso Passivo: Pedir à IA a solução pronta e apenas copiar/colar (Atrofia intelectual acelerada).\n\nUso Ativo: Usar a IA para questionar suas premissas, pedir dicas sem revelação do resultado ou debater visões contrárias (Amplificação e tutoria cognitiva).",
+                icon: "fa-sliders",
+                color: "text-purple-400"
+            }
+        };
+
+        function openTopicModal(key) {
+            const topic = topicData[key];
+            if (topic) {
+                openInfoModal(topic.title, topic.text, topic.icon, topic.color);
+            }
+        }
+
+        /* -------------------------------------------------------------
+           3. DESAFIO AO VIVO + PLACAR DA FEIRA
+        ------------------------------------------------------------- */
+        const $ = id => document.getElementById(id);
+        const BTN = "px-8 py-3.5 bg-gradient-to-r from-cyan-400 to-blue-600 hover:from-cyan-300 hover:to-blue-500 text-black font-extrabold rounded-xl shadow-cyan-glow transition-all";
+        const OPT = "w-full text-left p-4 bg-gray-900 border border-gray-700 hover:border-cyan-400 rounded-xl text-white font-bold transition-all";
+        const KEY = 'poc_placar_v2';
+        const EMPTY = () => ({ think: { n: 0, ok: 0 }, copy: { n: 0, ok: 0 }, prof: { estudante: 0, professor: 0, visitante: 0 }, log: [] });
+        const PROF = {
+            estudante: { l: 'Estudante', pl: 'Estudantes', i: 'fa-user-graduate' },
+            professor: { l: 'Professor(a)', pl: 'Professores', i: 'fa-chalkboard-user' },
+            visitante: { l: 'Visitante', pl: 'Visitantes', i: 'fa-user-group' }
+        };
+        let mem = EMPTY();
+        let mode = null, cur = [], profile = null, playerName = '', P = [];
+
+        const BANK = [
+            {
+                q: "Em um grande lago, existe uma mancha de algas. A cada dia que passa, a mancha dobra de tamanho. Se ela leva exatamente 30 dias para cobrir o lago inteiro, quantos dias levou para cobrir exatamente a metade dele?",
+                ans: "Ela levou 29 dias.",
+                how: "Como a mancha dobra a cada dia, no dia 30 ela cobre o lago todo. Então, no dia anterior (dia 29), ela cobria exatamente a metade.",
+                opts: [
+                    { t: "15 dias", ok: false, why: "É a intuição linear: metade de 30. Mas a mancha dobra a cada dia, ela não cresce a mesma quantidade todo dia." },
+                    { t: "29 dias", ok: true },
+                    { t: "28 dias", ok: false, why: "Se a metade fosse no dia 28, o lago já estaria cheio no dia 29." }
+                ]
+            },
+            {
+                q: "Um caracol está no fundo de um poço seco com 10 metros de profundidade. De dia ele sobe 3 metros, mas à noite, dormindo, escorrega 2 metros. Quantos dias ele leva para sair do poço?",
+                ans: "Ele leva 8 dias.",
+                how: "Do dia 1 ao dia 7 ele ganha 1 metro por dia e termina o sétimo dia no metro 7. No oitavo dia sobe mais 3 metros, chega aos 10 e sai do poço antes de escorregar.",
+                opts: [
+                    { t: "10 dias", ok: false, why: "Você fez 3 − 2 = 1 metro por dia. Mas no último dia ele chega à borda e sai antes de escorregar à noite." },
+                    { t: "8 dias", ok: true },
+                    { t: "7 dias", ok: false, why: "No sétimo dia ele chega, no máximo, aos 9 metros, e ainda falta 1 metro para a borda." }
+                ]
+            },
+            {
+                q: "Se 5 máquinas levam 5 minutos para fabricar 5 peças, quanto tempo 100 máquinas levam para fabricar 100 peças?",
+                ans: "Levam 5 minutos.",
+                how: "Se 5 máquinas fazem 5 peças em 5 minutos, cada máquina faz 1 peça em 5 minutos. Com 100 máquinas trabalhando ao mesmo tempo, cada uma faz a sua peça nesses mesmos 5 minutos.",
+                opts: [
+                    { t: "100 minutos", ok: false, why: "É a proporção direta que a intuição pede, mas ela ignora que as máquinas trabalham ao mesmo tempo." },
+                    { t: "5 minutos", ok: true },
+                    { t: "50 minutos", ok: false, why: "Esse número vem de uma proporção que não existe aqui: cada máquina leva 5 minutos por peça, não importa quantas haja." }
+                ]
+            },
+            {
+                q: "Você tem três caixas fechadas: uma só com maçãs, outra só com laranjas e a terceira com maçãs e laranjas misturadas. Todas as etiquetas estão erradas. Você pode abrir só uma caixa e tirar uma fruta, sem olhar dentro das outras. Qual caixa abrir para ter 100% de certeza do conteúdo de todas?",
+                ans: "Abrir a caixa com a etiqueta “Maçãs e Laranjas”.",
+                how: "Como todas as etiquetas estão erradas, a caixa “Maçãs e Laranjas” guarda só maçãs ou só laranjas. Saiu uma maçã? Então ela é a caixa de maçãs, a rotulada “Laranjas” só pode ser a mistura e a rotulada “Maçãs” é a de laranjas. Se sair uma laranja, o raciocínio é o mesmo.",
+                opts: [
+                    { t: "A caixa com a etiqueta “Maçãs”", ok: false, why: "Se sair uma laranja, você não sabe se a caixa é só de laranjas ou a mistura. Não dá certeza." },
+                    { t: "A caixa com a etiqueta “Laranjas”", ok: false, why: "Se sair uma maçã, você não sabe se a caixa é só de maçãs ou a mistura. Não dá certeza." },
+                    { t: "A caixa com a etiqueta “Maçãs e Laranjas”", ok: true }
+                ]
+            },
+            {
+                q: "Um caderno e uma caneta custam juntos R$ 2,20. O caderno custa R$ 2,00 a mais que a caneta. Quanto custa a caneta?",
+                ans: "A caneta custa R$ 0,10.",
+                how: "Se a caneta custa x, o caderno custa x + 2,00. Juntos: 2x + 2,00 = 2,20. Então 2x = 0,20 e x = R$ 0,10.",
+                opts: [
+                    { t: "R$ 0,10", ok: true },
+                    { t: "R$ 0,20", ok: false, why: "Você fez 2,20 − 2,00 direto. É o atalho da intuição, e ele erra a conta." },
+                    { t: "R$ 0,05", ok: false, why: "Com a caneta a R$ 0,05, o caderno custaria R$ 2,05 e o total seria R$ 2,10, não R$ 2,20." }
+                ]
+            },
+            {
+                q: "Você está diante de duas portas: uma leva à liberdade e a outra à ruína eterna. Há dois guardas vigiando as portas. Acontece que um deles sempre diz a verdade e o outro sempre mente (você não sabe quem é quem, nem qual porta é qual). Você tem o direito de fazer apenas uma pergunta para apenas um dos guardas. O que você deve perguntar para garantir que vai descobrir a porta da liberdade?",
+                ans: "Perguntar: “Se eu perguntasse ao outro guarda qual é a porta da liberdade, qual porta ele me indicaria?” E escolher a porta oposta à indicada.",
+                how: "Se você perguntar ao mentiroso, ele sabe que o honesto apontaria para a liberdade, então ele mentirá e apontará para a ruína. Se você perguntar ao honesto, ele sabe que o mentiroso apontaria para a ruína, então ele dirá a verdade e apontará para a ruína. Ou seja: os dois sempre apontarão para a porta errada. Basta escolher a porta oposta à que o guarda indicar!",
+                opts: [
+                    { t: "“Qual é a porta da liberdade?”", ok: false, why: "Se você perguntar direto, o honesto aponta a porta certa e o mentiroso aponta a errada. Como você não sabe com quem está falando, não dá para confiar na resposta." },
+                    { t: "“Se eu perguntasse ao outro guarda qual é a porta da liberdade, qual porta ele me indicaria?”", ok: true },
+                    { t: "“Você é o guarda que sempre diz a verdade?”", ok: false, why: "Os dois respondem “sim”: o honesto porque é verdade e o mentiroso porque mente. A resposta não ajuda a diferenciar os guardas nem a achar a porta." }
+                ]
+            },
+            {
+                q: "Descubra qual é a próxima letra desta sequência: U, D, T, Q, C, S, S, O, N, ?",
+                ans: "A próxima letra é D (de Dez).",
+                how: "Cada letra é a inicial de um número, em ordem crescente: Um, Dois, Três, Quatro, Cinco, Seis, Sete, Oito, Nove... Logo, o próximo é Dez.",
+                opts: [
+                    { t: "U", ok: false, why: "Não é um ciclo que volta ao começo. Não há conta nem padrão matemático escondido: cada letra é a inicial de um número escrito por extenso." },
+                    { t: "D", ok: true },
+                    { t: "O", ok: false, why: "Onze começa com O, mas ele só vem depois do Dez. A sequência está em ordem: Um, Dois, Três... Nove e, então, Dez." }
+                ]
+            },
+            {
+                q: "Qual é o próximo número que completa esta sequência lógica? 2, 3, 5, 8, 12, 17, ?",
+                ans: "O próximo número é 23.",
+                how: "O segredo não é o número em si, mas o espaço entre um número e o outro, que aumenta de 1 em 1 a cada passo: 2 + 1 = 3, 3 + 2 = 5, 5 + 3 = 8, 8 + 4 = 12 e 12 + 5 = 17. Seguindo o padrão, o próximo passo é somar 6: 17 + 6 = 23.",
+                opts: [
+                    { t: "22", ok: false, why: "Isso é somar 5 de novo (17 + 5), como se o valor somado fosse fixo. Mas ele aumenta 1 a cada passo." },
+                    { t: "23", ok: true },
+                    { t: "24", ok: false, why: "Isso é somar 7 (17 + 7). O último passo foi +5, então o próximo é +6, não +7." }
+                ]
+            }
+        ];
+
+        const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        function shuffle(a) { return a.map(v => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map(x => x[1]); }
+        function load() { try { const r = localStorage.getItem(KEY); if (r) return Object.assign(EMPTY(), JSON.parse(r)); } catch (e) {} return mem; }
+        function save(b) { mem = b; try { localStorage.setItem(KEY, JSON.stringify(b)); } catch (e) {} }
+        function stage(h) { $('stage').innerHTML = h; }
+        function question(n) { return `<p class="text-center text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Problema ${n + 1} de 2</p><p class="text-center text-lg sm:text-xl font-bold text-white max-w-2xl mx-auto mb-8">${P[n].q}</p>`; }
+        function options(list, fn) {
+            cur = shuffle(list);
+            return `<div class="space-y-3 max-w-xl mx-auto">${cur.map((x, i) => `<button onclick="${fn}(${i})" class="${OPT}">${x.t}</button>`).join('')}</div>`;
+        }
+
+        function stepChoice() {
+            mode = null;
+            P = shuffle(BANK).slice(0, 2);
+            stage(`${question(0)}
+                <p class="text-center text-sm font-semibold text-gray-300 mb-4">Como você quer resolver?</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <button onclick="startMode('think')" class="group text-left bg-gray-900/90 neon-border-cyan rounded-2xl p-6 transition-all hover:-translate-y-1">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center mb-4 text-xl"><i class="fa-solid fa-brain"></i></div>
+                        <h3 class="text-xl font-extrabold text-white mb-1">Pensar</h3>
+                        <p class="text-sm text-gray-400">Escolha sua resposta primeiro. Depois você vê o método.</p>
+                    </button>
+                    <button onclick="startMode('copy')" class="group text-left bg-gray-900/90 border border-blue-500/30 hover:border-blue-400 hover:shadow-blue-glow rounded-2xl p-6 transition-all hover:-translate-y-1">
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center mb-4 text-xl"><i class="fa-solid fa-robot"></i></div>
+                        <h3 class="text-xl font-extrabold text-white mb-1">Copiar da IA</h3>
+                        <p class="text-sm text-gray-400">Receba a resposta pronta, sem esforço nenhum.</p>
+                    </button>
+                </div>`);
+        }
+
+        function startMode(m) {
+            mode = m;
+            if (m === 'copy') return solved(null);
+            stage(question(0) + options(P[0].opts, 'solved'));
+        }
+
+        function solved(i) {
+            const copy = mode === 'copy';
+            let head;
+            if (copy) {
+                head = `<div class="border-b border-gray-800 pb-3 mb-4 text-blue-400 font-bold text-sm"><i class="fa-solid fa-bolt mr-2"></i>Resposta da IA (simulada)</div>
+                        <p class="text-white font-bold text-lg mb-2">${P[0].ans}</p>`;
+            } else {
+                const x = cur[i];
+                head = `<p class="font-extrabold text-lg mb-2 ${x.ok ? 'text-cyan-400' : 'text-yellow-400'}">${x.ok ? 'Isso aí, você acertou!' : 'Não foi dessa vez.'}</p>`
+                     + (x.ok ? '' : `<p class="text-gray-300 text-sm mb-2">${x.why}</p><p class="text-white font-bold mb-2">${P[0].ans}</p>`);
+            }
+            stage(`<div class="max-w-xl mx-auto bg-gray-950 border ${copy ? 'border-blue-500/40' : 'border-cyan-500/40'} rounded-2xl p-6">
+                        ${head}<p class="text-gray-400 text-sm">${P[0].how}</p>
+                    </div>
+                    <div class="text-center mt-6"><button onclick="step2()" class="${BTN}">Ir para o problema 2</button></div>`);
+        }
+
+        function step2() {
+            stage(`${question(1)}<p class="text-center text-sm text-gray-400 -mt-4 mb-6">Agora é com você: dessa vez a resposta não aparece.</p>${options(P[1].opts, 'pick2')}`);
+        }
+
+        function pick2(i) {
+            const x = cur[i], b = load();
+            b[mode].n++;
+            b.prof[profile]++;
+            b.log.push({ n: playerName, p: profile, m: mode, ok: x.ok });
+            b.log = b.log.slice(-200);
+            if (x.ok) b[mode].ok++;
+            save(b);
+            renderBoard();
+            const think = mode === 'think';
+            stage(`<div class="text-center max-w-xl mx-auto">
+                    <span class="px-4 py-1.5 rounded-full text-xs font-black ${think ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'}">${think ? 'Você fez com autonomia' : 'Você utilizou IA'}</span>
+                    <h3 class="text-2xl sm:text-4xl font-black text-white mt-3">${x.ok ? 'Você acertou!' : 'Não foi dessa vez.'}</h3>
+                    <p class="text-white font-bold mt-3">${P[1].ans}</p>
+                    <p class="text-gray-300 text-sm mt-2">${x.ok ? 'Você aplicou o método, não só repetiu um número.' : x.why}</p>
+                    <p class="text-gray-400 text-xs mt-2">${P[1].how}</p>
+                    <p class="text-gray-400 text-sm mt-5">Seu resultado já entrou no placar abaixo.</p>
+                    <button onclick="showLanding()" class="${BTN} mt-6">Próximo visitante</button>
+                </div>`);
+        }
+
+        function row(label, icon, color, bar, d) {
+            const pct = d.n ? Math.round(d.ok / d.n * 100) : 0;
+            return `<div>
+                <div class="flex flex-wrap justify-between gap-x-4 text-sm font-bold mb-2">
+                    <span class="${color}"><i class="fa-solid ${icon} mr-2"></i>${label}</span>
+                    <span class="text-gray-300 font-mono">${d.n ? `${d.ok} de ${d.n} acertaram (${pct}%)` : 'sem jogadores ainda'}</span>
+                </div>
+                <div class="w-full h-4 bg-gray-900 rounded-full overflow-hidden p-0.5 border border-gray-800"><div class="h-full ${bar} rounded-full" style="width:${pct}%"></div></div>
+            </div>`;
+        }
+
+        function renderBoard() {
+            const b = load(), total = b.think.n + b.copy.n;
+            $('board').innerHTML = `
+                <h3 class="text-lg font-extrabold text-white"><i class="fa-solid fa-chart-simple text-cyan-400 mr-2"></i>Placar da feira: acertos no segundo problema</h3>
+                ${total ? row('Quem fez com autonomia', 'fa-brain', 'text-cyan-400', 'bg-gradient-to-r from-cyan-500 to-blue-500', b.think)
+                         + row('Quem utilizou IA', 'fa-robot', 'text-purple-400', 'bg-gradient-to-r from-purple-500 to-pink-500', b.copy)
+                       : '<p class="text-gray-400 text-sm">Ninguém jogou ainda. Seja a primeira pessoa do placar!</p>'}
+                ${total ? `<p class="text-xs text-gray-400">${Object.keys(PROF).map(k => `${PROF[k].pl}: <b class="text-gray-200">${b.prof[k]}</b>`).join('&nbsp;&nbsp;&nbsp;')}</p>` : ''}
+                ${b.log.length ? `<div>
+                    <p class="text-sm font-bold text-gray-300 mb-2">Quem já jogou</p>
+                    <ul class="max-h-52 overflow-y-auto space-y-2 pr-1">${b.log.slice().reverse().map(e => `
+                        <li class="flex items-center justify-between gap-3 bg-gray-900/80 border border-gray-800 rounded-xl px-4 py-2 text-sm">
+                            <span class="text-white font-semibold truncate"><i class="fa-solid ${(PROF[e.p] || PROF.visitante).i} text-gray-500 mr-2"></i>${esc(e.n)}</span>
+                            <span class="shrink-0 text-xs ${e.m === 'think' ? 'text-cyan-400' : 'text-purple-400'}">${e.m === 'think' ? 'Autonomia' : 'Usou IA'}</span>
+                            <span class="shrink-0 text-xs font-bold ${e.ok ? 'text-cyan-400' : 'text-yellow-400'}">${e.ok ? 'Acertou' : 'Errou'}</span>
+                        </li>`).join('')}</ul>
+                </div>` : ''}
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <p class="text-xs text-gray-500 max-w-xl">Dados reais desta feira, guardados neste aparelho. Os problemas são sorteados e têm dificuldades diferentes. Poucas pessoas não provam nada: o placar serve para a conversa, não como conclusão científica.</p>
+                    <button onclick="resetBoard(this)" class="text-xs text-gray-400 hover:text-white underline">Zerar placar</button>
+                </div>`;
+        }
+
+        let armed = false;
+        function resetBoard(btn) {
+            if (!armed) {
+                armed = true;
+                btn.textContent = 'Clique de novo para confirmar';
+                setTimeout(() => { armed = false; renderBoard(); }, 4000);
+                return;
+            }
+            armed = false;
+            save(EMPTY());
+            renderBoard();
+        }
+
+        function showLanding() {
+            profile = null;
+            $('nome').value = '';
+            $('nome-erro').classList.add('hidden');
+            $('landing').classList.remove('hidden');
+            $('landing').scrollTop = 0;
+            document.body.style.overflow = 'hidden';
+            document.querySelectorAll('header, main, footer').forEach(e => e.inert = true);
+        }
+
+        function enter(p) {
+            const nm = $('nome').value.trim();
+            if (!nm) { $('nome-erro').classList.remove('hidden'); $('nome').focus(); return; }
+            playerName = nm;
+            profile = p;
+            $('landing').classList.add('hidden');
+            document.body.style.overflow = '';
+            document.querySelectorAll('header, main, footer').forEach(e => e.inert = false);
+            $('who').innerHTML = `<i class="fa-solid ${PROF[p].i} text-cyan-400 mr-1"></i> Jogando como ${esc(playerName)} (${PROF[p].l})`;
+            stepChoice();
+            window.scrollTo(0, 0);
+        }
+
+        renderBoard();
+        showLanding();
+
+        /* -------------------------------------------------------------
+           4. CHECKLIST DYNAMIC DIAGNOSTIC
+        ------------------------------------------------------------- */
+        function updateChecklistResult() {
+            const checkboxes = document.querySelectorAll('.chk-item');
+            let checkedCount = 0;
+            checkboxes.forEach(chk => {
+                if (chk.checked) checkedCount++;
+            });
+
+            const scoreTitle = document.getElementById('chk-score-title');
+            const scoreDesc = document.getElementById('chk-score-desc');
+
+            if (checkedCount === 0) {
+                scoreTitle.className = "text-xl font-extrabold text-cyan-400";
+                scoreTitle.innerText = "Autonomia Cognitiva Preservada!";
+                scoreDesc.innerText = "Você demonstra excelente uso crítico e independente do pensamento lógico.";
+            } else if (checkedCount <= 2) {
+                scoreTitle.className = "text-xl font-extrabold text-yellow-400";
+                scoreTitle.innerText = "Dependência Moderada";
+                scoreDesc.innerText = "Atenção: você já apresenta sinais iniciais de delegação passiva de memórias e tarefas.";
+            } else {
+                scoreTitle.className = "text-xl font-extrabold text-red-400";
+                scoreTitle.innerText = "Risco de Atrofia Intelectual Elevado";
+                scoreDesc.innerText = "Sua rotina depende fortemente de respostas geradas. Aplique a Regra dos 15 Minutos para reverter este quadro.";
+            }
+        }
+    </script>
+</body>
+</html>
